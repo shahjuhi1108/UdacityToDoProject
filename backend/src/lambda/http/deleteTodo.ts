@@ -1,12 +1,9 @@
 import 'source-map-support/register'
-
 import { APIGatewayProxyEvent, APIGatewayProxyResult, APIGatewayProxyHandler } from 'aws-lambda'
-
 import * as AWS from 'aws-sdk'
 import { getUserId } from '../utils'
 
 const docClient = new AWS.DynamoDB.DocumentClient()
-
 const todoTable = process.env.TODO_TABLE
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
@@ -14,9 +11,7 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
   console.log("Processing create to do event.", event)
 
   const userId = getUserId(event)
-  console.log(userId)
   const todoId = event.pathParameters.todoId
-  console.log(JSON.stringify(todoId))
 
   await deleteTodoById(userId, todoId)
 
@@ -25,7 +20,7 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
     headers: {
       'Access-Control-Allow-Origin': '*',
     },
-    body: null
+    body: ""
   }
   // TODO: Remove a TODO item by id
 }

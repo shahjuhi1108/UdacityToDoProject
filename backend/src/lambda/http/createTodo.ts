@@ -4,9 +4,10 @@ import { CreateTodoRequest } from '../../requests/CreateTodoRequest'
 import * as AWS from 'aws-sdk'
 import * as uuid from 'uuid'
 import { getUserId } from '../utils'
+import { createLogger } from '../../utils/logger'
 
+const logger = createLogger('todos')
 const docClient = new AWS.DynamoDB.DocumentClient()
-
 const todoTable = process.env.TODO_TABLE
 const bucketName = process.env.TODO_S3_BUCKET
 
@@ -16,15 +17,11 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
   console.log("Processing create to do event.", event)
 
   const newTodo: CreateTodoRequest = JSON.parse(event.body)
-  
   const userId = getUserId(event)
-
-  console.log(userId)
-
   const todoId = uuid.v4()
   const item = await createTodo(userId, todoId, newTodo)
 
-  console.log(JSON.stringify(item))
+  logger.info(`create group for user ${userId} with data ${newTodo}`)
 
   // TODO: Implement creating a new TODO item
   return {
