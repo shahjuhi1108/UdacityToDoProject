@@ -41,4 +41,16 @@ export async function updateTodo(event:APIGatewayProxyEvent, updatedTodo: Update
         dueDate: updatedTodo.dueDate,
         done: updatedTodo.done
     })
+}
+
+export async function deleteTodo(event:APIGatewayProxyEvent): Promise<void>{
+
+    const userId = getUserId(event)
+    const todoId = event.pathParameters.todoId
+
+    await todoAccess.deleteTodo({
+        userId: userId,
+        todoId: todoId
+    })
   }
+  

@@ -2,6 +2,7 @@ import * as AWS  from 'aws-sdk'
 
 import { TodoItem } from '../models/TodoItem'
 import { TodoUpdate } from '../models/TodoUpdate'
+import { TodoDelete } from '../models/TodoDelete'
 
 export class TodoAccess {
     constructor(
@@ -51,4 +52,13 @@ export class TodoAccess {
     }).promise()
   }
 
+  async deleteTodo(item: TodoDelete): Promise<void> {
+    await this.docClient.delete({
+      TableName: this.todoTable,
+        Key:{
+            'userId':item.userId,
+            'todoId':item.todoId
+        }
+    }).promise()
+  }
 }

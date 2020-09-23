@@ -13,11 +13,8 @@ const s3 = new AWS.S3({
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   const todoId = event.pathParameters.todoId
-  console.log(JSON.stringify(todoId))
 
   // TODO: Return a presigned URL to upload a file for a TODO item with the provided id
-
-  console.log("Expiration", urlExpiration)
 
   const url = getPresignedUrl(todoId)
 
@@ -32,7 +29,6 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
   }
   
 }
-
 
 function getPresignedUrl(todoId: string){
   return s3.getSignedUrl('putObject', {
