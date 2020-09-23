@@ -1,6 +1,7 @@
 import * as AWS  from 'aws-sdk'
 
 import { TodoItem } from '../models/TodoItem'
+import { TodoUpdate } from '../models/TodoUpdate'
 
 export class TodoAccess {
     constructor(
@@ -29,6 +30,25 @@ export class TodoAccess {
       .promise()
   
     return item
+  }
+
+  async updateTodo(item: TodoUpdate): Promise<void> {
+    await this.docClient.update({
+      TableName: this.todoTable,
+      Key:{
+          'userId':item.userId,
+          'todoId':item.todoId
+      },
+      UpdateExpression: 'set #namefield = :n, dueDate = :d, done = :done',
+      ExpressionAttributeValues: {
+          ':n' : item.name,
+          ':d' : item.dueDate,
+          ':done' : item.done
+      },
+      ExpressionAttributeNames:{
+          "#namefield": "name"
+        }
+    }).promise()
   }
 
 }

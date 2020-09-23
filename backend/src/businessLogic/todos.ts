@@ -3,6 +3,7 @@ import { APIGatewayProxyEvent } from 'aws-lambda'
 import * as uuid from 'uuid'
 import { getUserId } from '../lambda/utils'
 import { CreateTodoRequest } from '../requests/CreateTodoRequest'
+import { UpdateTodoRequest } from '../requests/UpdateTodoRequest'
 import { TodoItem } from '../models/TodoItem'
 
 const todoAccess = new TodoAccess()
@@ -27,3 +28,17 @@ export async function createTodo(event:APIGatewayProxyEvent, newTodo: CreateTodo
         attachmentUrl: `https://${bucketName}.s3.amazonaws.com/${todoId}`
     })
 }
+
+export async function updateTodo(event:APIGatewayProxyEvent, updatedTodo: UpdateTodoRequest): Promise<void>{
+    
+    const userId = getUserId(event)
+    const todoId = event.pathParameters.todoId
+
+    await todoAccess.updateTodo({
+        userId: userId,
+        todoId: todoId,
+        name: updatedTodo.name,
+        dueDate: updatedTodo.dueDate,
+        done: updatedTodo.done
+    })
+  }
