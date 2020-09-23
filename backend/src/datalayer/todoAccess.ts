@@ -4,10 +4,16 @@ import { TodoItem } from '../models/TodoItem'
 import { TodoUpdate } from '../models/TodoUpdate'
 import { TodoDelete } from '../models/TodoDelete'
 
+const s3 = new AWS.S3({
+  signatureVersion: 'v4'
+})
+
 export class TodoAccess {
     constructor(
         private readonly docClient = new AWS.DynamoDB.DocumentClient(),
-        private readonly todoTable = process.env.TODO_TABLE) {
+        private readonly todoTable = process.env.TODO_TABLE,
+        private readonly bucketName = process.env.TODO_S3_BUCKET,
+        private readonly urlExpiration = Number(process.env.SIGNED_URL_EXPIRATION)) {
     }
 
     async getTodosPerUser(userId: string) {
@@ -60,5 +66,13 @@ export class TodoAccess {
             'todoId':item.todoId
         }
     }).promise()
+  }
+
+  async getPresignedUrl(todoId: string){
+    return s3.getSignedUrl('putObject', {
+        Bucket: this.bucketName,
+        Key: todoId,
+        Expires: this.urlExpiration
+      });
   }
 }
