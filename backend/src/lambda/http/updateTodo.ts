@@ -13,18 +13,10 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
   console.log("Processing create to do event.", event)
 
   const userId = getUserId(event)
-  console.log(userId)
   const todoId = event.pathParameters.todoId
   const updatedTodo: UpdateTodoRequest = JSON.parse(event.body)
 
-  console.log(JSON.stringify(todoId))
-  console.log(JSON.stringify(updatedTodo))
-
   // TODO: Update a TODO item with the provided id using values in the "updatedTodo" object
-
-  // const item = await getTodoById(todoId)
-
-  // console.log(JSON.stringify(item))
 
   const newItem = await updateTodo(updatedTodo, userId, todoId)
 
@@ -38,16 +30,6 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
     })
   }
 }
-
-// async function getTodoById(todoId: string): Promise<AWS.DynamoDB.QueryOutput>{
-//   return await docClient.query({
-//       TableName: todoTable,
-//       KeyConditionExpression: 'todoId = :todoId',
-//       ExpressionAttributeValues:{
-//           ':todoId': todoId
-//       }
-//   }).promise()
-// }
 
 async function updateTodo(updatedTodo:UpdateTodoRequest,userId:string,todoId:string){
   await docClient.update({

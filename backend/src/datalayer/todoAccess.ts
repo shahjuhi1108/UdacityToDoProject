@@ -1,5 +1,7 @@
 import * as AWS  from 'aws-sdk'
 
+import { TodoItem } from '../models/TodoItem'
+
 export class TodoAccess {
     constructor(
         private readonly docClient = new AWS.DynamoDB.DocumentClient(),
@@ -19,6 +21,14 @@ export class TodoAccess {
         return result.Items
   }
 
-
+  async createTodo(item: TodoItem): Promise<TodoItem> {
+    await this.docClient.put({
+        TableName: this.todoTable,
+        Item: item
+      })
+      .promise()
+  
+    return item
+  }
 
 }

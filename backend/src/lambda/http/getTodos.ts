@@ -16,13 +16,23 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
 
   const todos = await getTodosPerUser(userId)
 
+  if(todos.Count !== 0) {
+    return {
+      statusCode: 200,
+      headers: {
+        'Access-Control-Allow-Origin': '*'
+      },
+      body: JSON.stringify({
+        items: todos
+      })
+    }
+  } 
+
   return {
-    statusCode: 200,
+    statusCode: 404,
     headers: {
       'Access-Control-Allow-Origin': '*'
     },
-    body: JSON.stringify({
-      items: todos
-    })
+    body: ''
   }
 }
