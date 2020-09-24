@@ -1,19 +1,21 @@
 import { CustomAuthorizerEvent, CustomAuthorizerResult } from 'aws-lambda'
 import 'source-map-support/register'
 import * as AWS from 'aws-sdk'
+import * as AWSXRay from 'aws-xray-sdk'
 
 import { verify } from 'jsonwebtoken'
 import { createLogger } from '../../utils/logger'
-//import Axios from 'axios'
-//import { Jwt } from '../../auth/Jwt'
 import { JwtPayload } from '../../auth/JwtPayload'
+
+const XAWS = AWSXRay.captureAWS(AWS)
+
 
 const logger = createLogger('auth')
 
 const secretId = process.env.AUTH_0_SECRET_ID
 const secretField = process.env.AUTH_0_SECRET_FIELD
 
-const client = new AWS.SecretsManager()
+const client = new XAWS.SecretsManager()
 
 let cachedSecret: string
 
